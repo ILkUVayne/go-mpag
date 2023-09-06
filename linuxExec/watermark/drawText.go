@@ -14,8 +14,6 @@ import (
 添加文字水印
 */
 
-type Option func(dt *DrawText)
-
 type DrawText struct {
 	fontFile  string
 	text      string
@@ -30,7 +28,7 @@ type DrawText struct {
 
 type DrawTexts []*DrawText
 
-func NewDrawText(opts ...Option) *DrawText {
+func NewDrawText(opts ...common.Option) *DrawText {
 	dt := &DrawText{
 		fontFile:  "lazy.ttf",
 		fontcolor: "#ffffff",
@@ -45,88 +43,55 @@ func NewDrawText(opts ...Option) *DrawText {
 	return dt
 }
 
-func WithFontFile(fontFile string) Option {
-	return func(dt *DrawText) {
-		dt.fontFile = fontFile
+func WithFontFile(fontFile string) common.Option {
+	return func(st interface{}) {
+		st.(*DrawText).fontFile = fontFile
 	}
 }
 
-func WithText(text string) Option {
-	return func(dt *DrawText) {
-		dt.text = text
+func WithText(text string) common.Option {
+	return func(st interface{}) {
+		st.(*DrawText).text = text
 	}
 }
 
-func WithTextFile(textFile string) Option {
-	return func(dt *DrawText) {
-		dt.textFile = textFile
+func WithTextFile(textFile string) common.Option {
+	return func(st interface{}) {
+		st.(*DrawText).textFile = textFile
 	}
 }
 
-func WithBox(box bool) Option {
-	return func(dt *DrawText) {
-		dt.box = box
+func WithBox(box bool) common.Option {
+	return func(st interface{}) {
+		st.(*DrawText).box = box
 	}
 }
 
-func WithBoxColor(boxColor string) Option {
-	return func(dt *DrawText) {
-		dt.boxColor = boxColor
+func WithBoxColor(boxColor string) common.Option {
+	return func(st interface{}) {
+		st.(*DrawText).boxColor = boxColor
 	}
 }
-func WithFontsize(fontsize int) Option {
-	return func(dt *DrawText) {
-		dt.fontsize = fontsize
+func WithFontsize(fontsize int) common.Option {
+	return func(st interface{}) {
+		st.(*DrawText).fontsize = fontsize
 	}
 }
-func WithAlpha(transparency float64) Option {
-	return func(dt *DrawText) {
-		dt.alpha = transparency
+func WithAlpha(transparency float64) common.Option {
+	return func(st interface{}) {
+		st.(*DrawText).alpha = transparency
 	}
 }
-func WithFontcolor(fontcolor string) Option {
-	return func(dt *DrawText) {
-		dt.fontcolor = fontcolor
+func WithFontcolor(fontcolor string) common.Option {
+	return func(st interface{}) {
+		st.(*DrawText).fontcolor = fontcolor
 	}
 }
-func WithPosition(x, y int) Option {
-	return func(dt *DrawText) {
-		dt.x = x
-		dt.y = y
+func WithPosition(x, y int) common.Option {
+	return func(st interface{}) {
+		st.(*DrawText).x = x
+		st.(*DrawText).y = y
 	}
-}
-
-func (dt *DrawTexts) Watermark(srcPath, dstPath string) error {
-	// 判断dstPath是否存在
-	exists, err := common.PathExists(dstPath)
-	if err != nil {
-		return err
-	}
-	if exists {
-		return errors.New(fmt.Sprintf("dstPath %s is exists", dstPath))
-	}
-	// 构建参数
-	cmd := ""
-	for _, v := range *dt {
-		if cmd == "" {
-			cmd = cmd + v.buildArgs()
-			continue
-		}
-		cmd = cmd + "," + v.buildArgs()
-	}
-
-	if cmd == "" {
-		return errors.New("text or textFile is empty")
-	}
-	println(cmd)
-	c := exec.Command("ffmpeg", "-i", srcPath, "-vf", cmd, dstPath)
-	c.Stdout = os.Stdout
-	c.Stderr = os.Stderr
-	err = c.Run()
-	if err != nil {
-		log.Fatalf("failed to call cmd.Run(): %v", err)
-	}
-	return nil
 }
 
 func (dt *DrawText) buildArgs() string {
@@ -148,4 +113,40 @@ func (dt *DrawText) buildArgs() string {
 	}
 
 	return ""
+}
+
+func (dt *DrawTexts) Watermark(srcPath, dstPath string, _ ...string) error {
+	// 判断dstPath是否存在
+	exists, err := common.PathExists(dstPath)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return errors.New(fmt.Sprintf("dstPath %s is exists", dstPath))
+	}
+	c := exec.Command("ffmpeg", "-i")
+	// 构建参数
+	c.Args = append(c.Args, dt.buildArgs(srcPath, dstPath)...)
+	c.Stdout = os.Stdout
+	c.Stderr = os.Stderr
+	err = c.Run()
+	if err != nil {
+		log.Fatalf("failed to call cmd.Run(): %v", err)
+	}
+	return nil
+}
+
+func (dt *DrawTexts) buildArgs(srcPath, dstPath string) []string {
+	cmd := ""
+	for _, v := range *dt {
+		if cmd == "" {
+			cmd = cmd + v.buildArgs()
+			continue
+		}
+		cmd = cmd + "," + v.buildArgs()
+	}
+	if cmd == "" {
+		log.Fatal("text or textFile is empty")
+	}
+	return []string{srcPath, "-vf", cmd, dstPath}
 }
