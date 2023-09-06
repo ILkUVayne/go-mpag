@@ -17,27 +17,27 @@ import (
 type Option func(dt *DrawText)
 
 type DrawText struct {
-	fontFile     string
-	text         string
-	textFile     string
-	fontcolor    string
-	box          bool
-	boxColor     string
-	fontsize     int
-	x, y         int
-	transparency float64
+	fontFile  string
+	text      string
+	textFile  string
+	fontcolor string
+	box       bool
+	boxColor  string
+	fontsize  int
+	x, y      int
+	alpha     float64
 }
 
 type DrawTexts []*DrawText
 
 func NewDrawText(opts ...Option) *DrawText {
 	dt := &DrawText{
-		fontFile:     "lazy.ttf",
-		fontcolor:    "#ffffff",
-		box:          false,
-		boxColor:     "#ffffff",
-		fontsize:     100,
-		transparency: 1,
+		fontFile:  "lazy.ttf",
+		fontcolor: "#ffffff",
+		box:       false,
+		boxColor:  "#ffffff",
+		fontsize:  100,
+		alpha:     1,
 	}
 	for _, v := range opts {
 		v(dt)
@@ -79,9 +79,9 @@ func WithFontsize(fontsize int) Option {
 		dt.fontsize = fontsize
 	}
 }
-func WithTransparency(transparency float64) Option {
+func WithAlpha(transparency float64) Option {
 	return func(dt *DrawText) {
-		dt.transparency = transparency
+		dt.alpha = transparency
 	}
 }
 func WithFontcolor(fontcolor string) Option {
@@ -132,7 +132,8 @@ func (dt *DrawTexts) Watermark(srcPath, dstPath string) error {
 func (dt *DrawText) buildArgs() string {
 	cmd := "drawtext=fontfile=" + dt.fontFile + ":"
 	cmd += "fontsize=" + strconv.Itoa(dt.fontsize) + ":"
-	cmd += "fontcolor=" + dt.fontcolor + "@" + strconv.FormatFloat(dt.transparency, 'f', 2, 64) + ":"
+	cmd += "fontcolor=" + dt.fontcolor + ":"
+	cmd += "alpha=" + strconv.FormatFloat(dt.alpha, 'f', 2, 64) + ":"
 	cmd += "x=" + strconv.Itoa(dt.x) + ":" + "y=" + strconv.Itoa(dt.y) + ":"
 	if dt.box {
 		cmd += "box=1:boxcolor=" + dt.boxColor + ":"

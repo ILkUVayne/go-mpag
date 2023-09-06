@@ -16,16 +16,16 @@ func main() {
 
 func teXtWM() {
 	srcPath := "/mnt/f/video/1251203951-1-192.mp4"
-	dstPath := "/mnt/f/video/out6.mp4"
+	dstPath := "/mnt/f/video/out8.mp4"
 	dt1 := watermark.NewDrawText(
 		watermark.WithText("happy!"),
-		watermark.WithTransparency(0.3),
+		watermark.WithAlpha(0.3),
 		watermark.WithFontsize(50),
 		watermark.WithPosition(10, 20),
 	)
 	dt2 := watermark.NewDrawText(
 		watermark.WithText("hello!"),
-		watermark.WithTransparency(0.6),
+		watermark.WithAlpha(0.6),
 		watermark.WithFontsize(100),
 		watermark.WithPosition(20, 100),
 		watermark.WithFontcolor("red"),
