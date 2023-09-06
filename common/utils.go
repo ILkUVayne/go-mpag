@@ -2,6 +2,8 @@ package common
 
 import "os"
 
+type Option func(st interface{})
+
 func PathExists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {

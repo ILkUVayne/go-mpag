@@ -1,41 +1,16 @@
 package main
 
-import (
-	"fmt"
-	"go-mpeg/linuxExec/watermark"
-)
+import "go-mpeg/linuxExec/watermark"
 
 // ffmpeg -hide_banner -i /mnt/f/video/1251203951-1-192.mp4 -i /mnt/f/video/watermark.jpg -filter_complex "overlay=x=0:y=0" out.mp4 -y
 // ffmpeg -i /mnt/f/video/1251203951-1-192.mp4 -vf "drawtext=fontsize=100:fontfile=lazy.ttf:text='hello world':x=20:y=20:fontcolor=#123fff@.5:box=1:boxcolor=yellow" out1.mp4
 // ffmpeg -i /mnt/f/video/1251203951-1-192.mp4 -vf "drawtext=fontsize=100:fontfile=lazy.ttf:textfile=./1.text:x=20:y=20:fontcolor=#123fff:box=1:boxcolor=yellow" out1.mp4
 
+// ffmpeg -i /mnt/f/video/1251203951-1-192.mp4 -i /mnt/f/video/watermark.jpg -i /mnt/f/video/watermark.jpg -i /mnt/f/video/watermark.jpg -i /mnt/f/video/watermark.jpg -filter_complex "[1:v]scale=160:90,format=yuva444p,colorchannelmixer=aa=0.4[img1];[2:v]scale=160:90,format=yuva444p,colorchannelmixer=aa=0.4[img2];[3:v]scale=160:90,format=yuva444p,colorchannelmixer=aa=0.4[img3];[4:v]scale=160:90,format=yuva444p,colorchannelmixer=aa=0.4[img4];[0:v][img1]overlay=x=5:y=5[01];[01][img2]overlay=x=400:y=5[012];[012][img3]overlay=x=5:y=200[0123];[0123][img4]overlay=x=400:y=200" /mnt/f/video/out.mp4;
 // 简单filtergraphs 视频和音频分别-vf和-af
 func main() {
-	teXtWM()
-}
-
-func teXtWM() {
-	srcPath := "/mnt/f/video/1251203951-1-192.mp4"
-	dstPath := "/mnt/f/video/out8.mp4"
-	dt1 := watermark.NewDrawText(
-		watermark.WithText("happy!"),
-		watermark.WithAlpha(0.3),
-		watermark.WithFontsize(50),
-		watermark.WithPosition(10, 20),
-	)
-	dt2 := watermark.NewDrawText(
-		watermark.WithText("hello!"),
-		watermark.WithAlpha(0.6),
-		watermark.WithFontsize(100),
-		watermark.WithPosition(20, 100),
-		watermark.WithFontcolor("red"),
-	)
-	dts := watermark.DrawTexts{
-		dt1,
-		dt2,
-	}
-	err := dts.Watermark(srcPath, dstPath)
-	if err != nil {
-		fmt.Printf("%s\n", err.Error())
-	}
+	// 文字水印
+	//watermark.TextWM()
+	// 图片水印
+	watermark.FcWM()
 }
