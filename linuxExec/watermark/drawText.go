@@ -28,6 +28,8 @@ type DrawText struct {
 	transparency float64
 }
 
+type DrawTexts []*DrawText
+
 func NewDrawText(opts ...Option) *DrawText {
 	dt := &DrawText{
 		fontFile:     "lazy.ttf",
@@ -94,7 +96,7 @@ func WithPosition(x, y int) Option {
 	}
 }
 
-func (dt *DrawText) Watermark(srcPath, dstPath string) error {
+func (dt *DrawTexts) Watermark(srcPath, dstPath string) error {
 	// 判断dstPath是否存在
 	exists, err := common.PathExists(dstPath)
 	if err != nil {
@@ -103,7 +105,16 @@ func (dt *DrawText) Watermark(srcPath, dstPath string) error {
 	if exists {
 		return errors.New(fmt.Sprintf("dstPath %s is exists", dstPath))
 	}
-	cmd := dt.buildArgs()
+	// 构建参数
+	cmd := ""
+	for _, v := range *dt {
+		if cmd == "" {
+			cmd = cmd + v.buildArgs()
+			continue
+		}
+		cmd = cmd + "," + v.buildArgs()
+	}
+
 	if cmd == "" {
 		return errors.New("text or textFile is empty")
 	}

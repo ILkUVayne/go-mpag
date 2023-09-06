@@ -1,5 +1,5 @@
 package watermark
 
 type WaterMarker interface {
-	Watermark() error
+	Watermark(srcPath, dstPath string) error
 }
