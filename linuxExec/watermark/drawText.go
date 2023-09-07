@@ -12,9 +12,20 @@ import (
 
 /**
 添加文字水印
+
+左上角 10:10
+右上角 w-text_w:10
+左下角 10:h-line_h
+右下角 w-text_w:h-line_h
+
 */
 
+type position struct {
+	x, y string
+}
+
 type DrawText struct {
+	pos       position
 	fontFile  string
 	text      string
 	textFile  string
@@ -22,7 +33,6 @@ type DrawText struct {
 	box       bool
 	boxColor  string
 	fontsize  int
-	x, y      int
 	alpha     float64
 }
 
@@ -87,10 +97,10 @@ func WithFontcolor(fontcolor string) common.Option {
 		st.(*DrawText).fontcolor = fontcolor
 	}
 }
-func WithPosition(x, y int) common.Option {
+func WithPosition(x, y string) common.Option {
 	return func(st interface{}) {
-		st.(*DrawText).x = x
-		st.(*DrawText).y = y
+		st.(*DrawText).pos.x = x
+		st.(*DrawText).pos.y = y
 	}
 }
 
@@ -99,7 +109,7 @@ func (dt *DrawText) buildArgs() string {
 	cmd += "fontsize=" + strconv.Itoa(dt.fontsize) + ":"
 	cmd += "fontcolor=" + dt.fontcolor + ":"
 	cmd += "alpha=" + strconv.FormatFloat(dt.alpha, 'f', 2, 64) + ":"
-	cmd += "x=" + strconv.Itoa(dt.x) + ":" + "y=" + strconv.Itoa(dt.y) + ":"
+	cmd += "x=" + dt.pos.x + ":" + "y=" + dt.pos.y + ":"
 	if dt.box {
 		cmd += "box=1:boxcolor=" + dt.boxColor + ":"
 	}
@@ -129,11 +139,7 @@ func (dt *DrawTexts) Watermark(srcPath, dstPath string, _ ...string) error {
 	c.Args = append(c.Args, dt.buildArgs(srcPath, dstPath)...)
 	c.Stdout = os.Stdout
 	c.Stderr = os.Stderr
-	err = c.Run()
-	if err != nil {
-		log.Fatalf("failed to call cmd.Run(): %v", err)
-	}
-	return nil
+	return c.Run()
 }
 
 func (dt *DrawTexts) buildArgs(srcPath, dstPath string) []string {

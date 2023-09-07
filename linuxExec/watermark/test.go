@@ -9,13 +9,13 @@ func TextWM() {
 		WithText("happy!"),
 		WithAlpha(0.3),
 		WithFontsize(50),
-		WithPosition(10, 20),
+		WithPosition("w-text_w", "10"),
 	)
 	dt2 := NewDrawText(
 		WithText("hello!"),
 		WithAlpha(0.6),
 		WithFontsize(100),
-		WithPosition(20, 100),
+		WithPosition("10", "h-line_h"),
 		WithFontcolor("red"),
 	)
 	dts := DrawTexts{

@@ -10,7 +10,7 @@ import "go-mpeg/linuxExec/watermark"
 // 简单filtergraphs 视频和音频分别-vf和-af
 func main() {
 	// 文字水印
-	//watermark.TextWM()
+	go watermark.TextWM()
 	// 图片水印
 	watermark.FcWM()
 }
