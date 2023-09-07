@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"go-mpeg/common"
-	"log"
 	"os"
 	"os/exec"
 	"strconv"
@@ -93,11 +92,7 @@ func (fc *FilterComplexes) Watermark(srcPath, dstPath string, marker ...string) 
 	c.Args = append(c.Args, fc.buildArgs(srcPath, dstPath, marker...)...)
 	c.Stdout = os.Stdout
 	c.Stderr = os.Stderr
-	err = c.Run()
-	if err != nil {
-		log.Fatalf("failed to call cmd.Run(): %v", err)
-	}
-	return nil
+	return c.Run()
 }
 
 func (fc *FilterComplexes) buildArgs(srcPath, dstPath string, marker ...string) []string {
