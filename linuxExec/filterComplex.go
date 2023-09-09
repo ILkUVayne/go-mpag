@@ -1,4 +1,4 @@
-package watermark
+package linuxExec
 
 import (
 	"errors"
@@ -78,7 +78,7 @@ func WithColorChannelMixer(ccm float64) common.Option {
 	}
 }
 
-func (fc *FilterComplexes) Watermark(srcPath, dstPath string, marker ...string) error {
+func (fc *FilterComplexes) Watermark(src Path, dstPath string, marker ...string) error {
 	// 判断dstPath是否存在
 	exists, err := common.PathExists(dstPath)
 	if err != nil {
@@ -89,7 +89,7 @@ func (fc *FilterComplexes) Watermark(srcPath, dstPath string, marker ...string) 
 	}
 	c := exec.Command("ffmpeg", "-i")
 	// 构建参数
-	c.Args = append(c.Args, fc.buildArgs(srcPath, dstPath, marker...)...)
+	c.Args = append(c.Args, fc.buildArgs(src.GetPath(), dstPath, marker...)...)
 	c.Stdout = os.Stdout
 	c.Stderr = os.Stderr
 	return c.Run()

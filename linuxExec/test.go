@@ -1,15 +1,18 @@
-package watermark
+package linuxExec
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func TextWM() {
-	srcPath := "/mnt/f/video/1251203951-1-192.mp4"
+	v := NewVideo("/mnt/f/video/1251203951-1-192.mp4")
 	dstPath := "/mnt/f/video/out1.mp4"
 	dt1 := NewDrawText(
 		WithText("happy!"),
 		WithAlpha(0.3),
 		WithFontsize(50),
 		WithPosition("w-text_w", "10"),
+		WithFontFile("lazy.ttf"),
 	)
 	dt2 := NewDrawText(
 		WithText("hello!"),
@@ -22,14 +25,14 @@ func TextWM() {
 		dt1,
 		dt2,
 	}
-	err := dts.Watermark(srcPath, dstPath)
+	err := dts.Watermark(v, dstPath)
 	if err != nil {
 		fmt.Printf("%s\n", err.Error())
 	}
 }
 
 func FcWM() {
-	srcPath := "/mnt/f/video/1251203951-1-192.mp4"
+	v := NewVideo("/mnt/f/video/1251203951-1-192.mp4")
 	dstPath := "/mnt/f/video/f_out3.mp4"
 	fc1 := NewFilterComplex(
 		WithOverlay("10", "10"),
@@ -55,7 +58,7 @@ func FcWM() {
 		"/mnt/f/video/watermark.jpg",
 		"/mnt/f/video/watermark.jpg",
 	}
-	err := fcs.Watermark(srcPath, dstPath, mark...)
+	err := fcs.Watermark(v, dstPath, mark...)
 	if err != nil {
 		fmt.Printf("%s\n", err.Error())
 	}
