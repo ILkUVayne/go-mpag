@@ -63,3 +63,13 @@ func FcWM() {
 		fmt.Printf("%s\n", err.Error())
 	}
 }
+
+func TestTrans265() {
+	v := NewVideo("/mnt/f/video/1251203951-1-192.mp4")
+	dstPath := "/mnt/f/video/265_out2.mp4"
+	trans := NewTranscoding(v, TVCodec(h265), TACodec(aac))
+	err := trans.Trans(dstPath)
+	if err != nil {
+		fmt.Printf("%s\n", err.Error())
+	}
+}

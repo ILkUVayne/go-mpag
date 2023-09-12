@@ -13,7 +13,9 @@ import "go-mpeg/linuxExec"
 
 func main() {
 	// 文字水印
-	go linuxExec.TextWM()
+	//go linuxExec.TextWM()
 	// 图片水印
-	linuxExec.FcWM()
+	//linuxExec.FcWM()
+	// 转码265
+	linuxExec.TestTrans265()
 }
