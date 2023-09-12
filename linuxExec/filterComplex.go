@@ -78,6 +78,7 @@ func WithColorChannelMixer(ccm float64) common.Option {
 	}
 }
 
+// Watermark 添加图片水印
 func (fc *FilterComplexes) Watermark(src Path, dstPath string, marker ...string) error {
 	// 判断dstPath是否存在
 	exists, err := common.PathExists(dstPath)

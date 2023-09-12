@@ -125,6 +125,7 @@ func (dt *DrawText) buildArgs() string {
 	return ""
 }
 
+// Watermark 添加文字水印
 func (dt *DrawTexts) Watermark(src Path, dstPath string, _ ...string) error {
 	// 判断dstPath是否存在
 	exists, err := common.PathExists(dstPath)

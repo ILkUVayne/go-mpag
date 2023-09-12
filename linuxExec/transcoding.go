@@ -10,9 +10,11 @@ import (
 )
 
 // ffmpeg -codecs  命令查看可用编码器
+// 常用视频编码器
 const h264 = "libx264"
 const h265 = "libx265"
 
+// 常用音频编码器
 const aac = "aac"
 
 // cv -vcodec -c:v
@@ -127,6 +129,7 @@ func TVol(vol int) common.Option {
 	}
 }
 
+// Trans 视频转码
 func (t *Transcoding) Trans(dstPath string) error {
 	// 判断dstPath是否存在
 	exists, err := common.PathExists(dstPath)
@@ -144,6 +147,7 @@ func (t *Transcoding) Trans(dstPath string) error {
 	return c.Run()
 }
 
+// buildArgs 构建转码参数
 func (t *Transcoding) buildArgs(dstPath string) []string {
 	// -c:v
 	args := []string{t.v.GetPath()}
